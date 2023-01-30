@@ -26,7 +26,7 @@
   (jt/after? stop-time start-time)
   )
 
-(defn validate-station-id
+(defn validate-pos-int
   [x]
   (if-let [numa (util/string->long x nil)]
     (when (pos? numa) numa) ))
@@ -36,10 +36,33 @@
   (if-let [numa (util/string->long x nil)]
     (when  (> numa 10) numa) ))
 
+(defn process-journey-row
+  [row-xs]
+  (let [[a b c d e f g h ] row-xs
+        d-time (validate-timestamp a)
+        r-time (validate-timestamp b)
+        d-id (validate-pos-int c)
+        d-name (not-empty d)
+        r-id (validate-pos-int e)
+        r-name (not-empty f)
+        distance (greater-than-ten g)
+        duration (greater-than-ten h)
+        out-vector [d-time r-time d-id d-name r-id r-name distance duration]
+        ]
+  (when (not-any? boolean? out-vector)
+    (when (valid-time-sequence? d-time r-time) out-vector))
+  ))
 
-
-;; (defn process-journey-row
-;;   )
-
-;; (defn process-station-row
-;;   )
+(defn process-station-row
+  [row-xs]
+  (let [[a b c d e f g h i j k l m] row-xs
+        fid (validate-pos-int a)
+        s-id (validate-pos-int b)
+        str-vec (mapv not-empty [c d e f g h i j])
+        cap (validate-pos-int k)
+        long (validate-logtitude l)
+        lat (validate-latitude m)
+        out-vector (vec (concat [fid s-id] [str-vec] [cap long lat] ) ) ;;c d e f g h i j cap long lat]
+        ]
+    (when (not-any? boolean? out-vector ) out-vector))
+  )
