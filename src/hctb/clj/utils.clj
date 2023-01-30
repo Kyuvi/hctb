@@ -55,3 +55,30 @@
   [dir ext]
   (->> (file-seq (jio/file dir))
        (filter (partial file-suffix? ext))))
+
+        ;;;; numbers ;;;;
+
+(defn string->bigdec
+  "Returns the BigDecimal that is contained in `string`, otherwise returns nil"
+  [string]
+  (if (re-matches (re-pattern "[-+]?([0-9]*[.])?[0-9]+") string)
+    (bigdec string)
+    nil))
+
+(defn string->long
+  "Returns the Long (base 10 integer) that is contained in `string`,
+   otherwise returns nil.
+  `coerce-pred` determines if a float is coereced to a long or not
+  (if not, false is returned for a string containing a float)."
+  ([string] (string->long string true))
+  ([string coerce-pred]
+  (let [x (string->bigdec string)]
+    (and
+     (if coerce-pred (number? x ) (int? x))
+     (long x)))))
+
+(defn string->double
+  "Returns the Double (float) that is contained in `string`, otherwise returns nil"
+  [string]
+  (let [x (string->bigdec string)]
+  (and (number? x ) (double x))))
