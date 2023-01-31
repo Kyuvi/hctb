@@ -3,7 +3,7 @@
             [java-time :as jt]
             [clojure.java.io :as jio]
             [clojure.java.jdbc :as sql]
-            [hctb.clj.utils :as util]
+            [hctb.clj.utils :as utils]
             [hctb.clj.csvs :as hc]
             ))
 
@@ -44,3 +44,93 @@
 (defn make-sql-table
   [db table-name header-seq]
   (sql/db-do-commands db (build-sql-table-commands table-name header-seq)))
+
+(defn insert-csv-data
+  [db table data-rows column-count]
+  (let [chunk-size 1000
+        process-fn (if (= column-count 8)
+                         hc/process-journey-row
+                         hc/process-station-row)]
+    (for [chunk-of-rows (partition chunk-size data-rows) ]
+      (->> (map process-fn chunk-of-rows)
+           (remove nil? )
+           (sql/insert-multi! db table)))
+    ))
+
+(defn create-table-insert-single-file
+  [db table-name csvfile]
+  (with-open [reader (jio/reader csvfile)]
+    (let [csv-rows (csv/read-csv reader)
+          header (apply hc/process-header-strings (first csv-rows))
+          data-rows (rest csv-rows)
+          column-count (count header)
+          ]
+      (make-sql-table db table-name header)
+      (insert-csv-data db table-name data-rows column-count)
+      column-count
+      )
+    ))
+
+(defn insert-loose-csvs
+  [db file-list]
+  (for [csvfile file-list
+    :let [table-name  (.getName csvfile)]]
+    (with-open [reader (jio/reader csvfile)]
+      (let [csv-rows (csv/read-csv reader)
+            header (apply hc/process-header-strings (first csv-rows))
+            data-rows (rest csv-rows)
+            column-count (count header)
+            ;; process-fn (if (= column-count 8)
+            ;;              hc/process-journey-row
+            ;;              hc/process-station-row)
+            ;; chunk-size 1000
+            ]
+        (make-sql-table db table-name header)
+        (insert-csv-data db table-name data-rows column-count)
+        ;; (for [chunk-of-rows (partition chunk-size data-rows) ]
+          ;; (->> (remove nil? (map process-fn chunk-of-rows))
+             ;; (sql/insert-multi! db table)))
+        )
+    )
+))
+
+(defn insert-csvs-from-subdirs
+  [db subdir-list]
+  (for [subdir subdir-list
+    :let [table-name (.getName subdir)
+          file-list (utils/list-files-of-type subdir "csv")
+          first-file (first file-list)
+          other-files (next file-list)
+    ;; process first file to get header-list
+          column-count (create-table-insert-single-file db table-name first-file)
+          ]]
+    (when other-files
+      (for [csvfile other-files] ;;  doseq?
+        (with-open [reader (jio/reader csvfile)]
+        (let [csv-rows (csv/read-csv reader)
+              next-header (apply hc/process-header-strings (first csv-rows))
+              data-rows (rest csv-rows)
+              next-column-count (count next-header)
+              ]
+          (if (= column-count next-column-count )
+            (insert-csv-data db table-name data-rows next-column-count)
+            (do (println
+                 (format "WARNING: "))
+                (insert-loose-csvs db (list csvfile))
+            )
+
+
+    )
+  ))))))
+
+
+(defn load-csvs-to-db
+  [db csvdir]
+  (let [subdirs (utils/list-subdirectories csvdir)
+        loose-csv-files (utils/list-files-of-type csvdir "csv")
+        ;; table-files (remove nil? (concat subdirs loose-files))
+        ;; (table-names (map #(.getName %) table-files))
+        ]
+    (when subdirs (insert-csvs-from-subdirs db subdirs))
+    (when loose-csv-files (insert-loose-csvs db loose-csv-files))
+  ))
