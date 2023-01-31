@@ -1,9 +1,16 @@
 (ns hctb.clj.sql
  (:require [clojure.data.csv :as csv]
             [java-time :as jt]
+            [clojure.java.io :as jio]
+            [clojure.java.jdbc :as sql]
             [hctb.clj.utils :as util]
             [hctb.clj.csvs :as hc]
             ))
+
+(def default-db {:dbtype "postgresql"
+                 :dbname   (or (System/getenv "POSTGERS_DB")  "hctb")
+                 :user     (or (System/getenv "POSTGRES_USER") "postgres")
+                 :password (or (System/getenv "POSTGRES_PASS") "solita")} )
 
 (def journey-types ["timestamp" "timestamp" "integer" "text"  "integer" "text"
                     "integer" "integer"])
