@@ -1,7 +1,7 @@
 (ns hctb.clj.csvs
   (:require [clojure.data.csv :as csv]
             [java-time :as jt]
-            [hctb.clj.utils :as util]) )
+            [hctb.clj.utils :as util]))
 
 (defn validate-latitude
   [x]
@@ -11,7 +11,7 @@
 (defn validate-logtitude
   [x]
   (if-let [numa (util/string->double x)]
-    (when (<= -90 x 90) numa) ))
+    (when (<= -90 numa 90) numa)))
 
 (defn validate-timestamp
   [x]
@@ -27,12 +27,12 @@
 (defn validate-pos-int
   [x]
   (if-let [numa (util/string->long x nil)]
-    (when (pos? numa) numa) ))
+    (when (pos? numa) numa)))
 
 (defn greater-than-ten
   [x]
   (if-let [numa (util/string->long x nil)]
-    (when  (> numa 10) numa) ))
+    (when  (> numa 10) numa)))
 
 (defn process-header-strings
   "Replaces whitespaces and periods in header names with underscores."
