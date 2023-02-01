@@ -70,5 +70,5 @@
         station-vector (vec (concat [fid s-id] [str-vec] [cap long lat] ) )
         ;; station-vector [fid s-id c d e f g h i j cap long lat]
         ]
-    (when (not-any? boolean? out-vector ) station-vector))
+    (when (not-any? boolean? station-vector ) station-vector))
   )
