@@ -77,11 +77,12 @@
         (throw (Exception.
                 (format "File %s has an unexpected header %s with %s columns."
                         csvfile header column-count)))
-        (make-sql-table db table-name header column-count)
-        (insert-csv-data db table-name header data-rows column-count)
-        column-count ;; Return column-count for use by insert-csvs-from-subdirs
+        (do
+          (make-sql-table db table-name header column-count)
+          (insert-csv-data db table-name header data-rows column-count)
+          column-count ;; Return column-count for use by insert-csvs-from-subdirs
         )
-      )))
+      ))))
 
 (defn insert-loose-csvs
   "Insert data from files in `file-list` into database `db`,
