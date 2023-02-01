@@ -42,6 +42,10 @@
        (mapv util/spaces-to-underscores)))
 
 (defn process-journey-row
+  "Ensure that rows in `row-xs` from the 'journey' csvs are of the right type,
+  if they are, return a vector of the processed strings converted into the
+  correct type, else returns nil (rows with distances and durations shorter than
+  10 meters and 10 seconds respectively return nil)."
   [row-xs]
   (let [[a b c d e f g h ] row-xs
         d-time (validate-timestamp a)
@@ -59,6 +63,9 @@
   ))
 
 (defn process-station-row
+  "Ensure that rows in `row-xs` from the 'station' csv(s) are of the right type,
+  if they are, return a vector of the processed strings converted into the
+  correct type, else returns nil"
   [row-xs]
   (let [[a b c d e f g h i j k l m] row-xs
         fid (validate-pos-int a)
