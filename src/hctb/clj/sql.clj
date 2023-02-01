@@ -12,6 +12,11 @@
                  :user     (or (System/getenv "POSTGRES_USER") "postgres")
                  :password (or (System/getenv "POSTGRES_PASS") "solita")} )
 
+(defn db-connection?
+  "Test if there is a connection to the database"
+  [db]
+  (= {:result 10} (first (sql/query db ["select 2*5 as result"]))) )
+
 (def journey-types ["timestamp" "timestamp" "integer" "text"  "integer" "text"
                     "integer" "integer"])
 
@@ -65,7 +70,8 @@
       ))
 
 (defn create-table-insert-file-data
-  "Create table `table-name` in database `db` with data from file `csvfile`."
+  "Create table `table-name` in database `db` with data from file `csvfile`.
+   Returns the number of columns in the table."
   [db table-name csvfile]
   (with-open [reader (jio/reader csvfile)]
     (let [csv-rows (csv/read-csv reader)
@@ -127,12 +133,14 @@
           ]]
     (when first-file
     ;; process first file to get subdir table column-count
-      (let [column-count (create-table-insert-file-data db table-name first-file)]
+      (let [column-count
+            (create-table-insert-file-data db table-name first-file)]
         (when other-files
           (for [csvfile other-files] ;;  doseq?
             (with-open [reader (jio/reader csvfile)]
               (let [csv-rows (csv/read-csv reader)
-                    next-header (apply hc/process-header-strings (first csv-rows))
+                    next-header (apply hc/process-header-strings
+                                       (first csv-rows))
                     data-rows (rest csv-rows)
                     next-column-count (count next-header)
                     ]
