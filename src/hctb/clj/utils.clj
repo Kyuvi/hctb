@@ -15,7 +15,7 @@
 ;;
         ;;;; strings ;;;;
 (defn alphanumeric?
-  "Test if `string` is completely aphanumeric"
+  "Test if `string` is completely aphanumeric."
   [string]
   (= string (apply str (re-seq #"[a-z_A-Z0-9]" string))))
 
@@ -32,13 +32,13 @@
         ;;;; i/o ;;;;
 
 (defn list-files
-  "Lists only the files in the directory string `dir`."
+  "Returns a list of only the files in the directory string `dir`."
   [dir]
   (->> (file-seq (jio/file dir))
        (remove #(.isDirectory ^java.io.File %))))
 
 (defn list-subdirectories
-  "Lists only the subdirectorys of the directory string `dir`"
+  "Returns a list of only the subdirectorys of the directory string `dir`"
   [dir]
   (->> (file-seq (jio/file dir))
        (filter #(.isDirectory %))
@@ -51,7 +51,7 @@
        (re-find (re-pattern (str ".*\\." suffix "$")) (.getName file))))
 
 (defn list-files-of-type
-  "Lists all files in the directory `dir` with the extension `ext`."
+  "Returns a list of all files in the directory `dir` with the extension `ext`."
   [dir ext]
   (->> (file-seq (jio/file dir))
        (filter (partial file-suffix? ext))))
@@ -59,7 +59,7 @@
         ;;;; numbers ;;;;
 
 (defn string->bigdec
-  "Returns the BigDecimal that is contained in `string`, otherwise returns nil"
+  "Returns the BigDecimal that is contained in `string`, otherwise returns nil."
   [string]
   (if (re-matches (re-pattern "[-+]?([0-9]*[.])?[0-9]+") string)
     (bigdec string)
@@ -78,7 +78,8 @@
      (long x)))))
 
 (defn string->double
-  "Returns the Double (float) that is contained in `string`, otherwise returns nil"
+  "Returns the Double (float) that is contained in `string`,
+   otherwise returns nil."
   [string]
   (let [x (string->bigdec string)]
   (and (number? x ) (double x))))
