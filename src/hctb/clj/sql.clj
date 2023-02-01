@@ -115,7 +115,10 @@
           (if (= column-count next-column-count )
             (insert-csv-data db table-name data-rows next-column-count)
             (do (println
-                 (format "WARNING: "))
+                 (format
+                  "WARNING: File %s has a different column count than %s,
+                   so creating individual table."
+                  csvfile first-file))
                 (insert-loose-csvs db (list csvfile))
             )
 
