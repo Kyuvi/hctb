@@ -20,10 +20,10 @@
                     "double_precision" "double_precision"])
 
 (defn build-sql-table-commands
-  ([table-name header-seq]
-   (define-sql-table table-name header-seq ""))
-  ([table-name header-seq ending-string]
-   (let [journey-prep (= (count header-seq) 8)
+  ([table-name header-seq column-count]
+   (define-sql-table table-name header-seq column-count ""))
+  ([table-name header-seq column-count ending-string]
+   (let [journey-prep (= column-count 8)
          ;; table-name (if journey-prep file-name "Hsl_bike_stations")
          table-types (if journey-prep journey-types station-types)
          ;; col-defs (apply
