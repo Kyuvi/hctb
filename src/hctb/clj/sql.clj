@@ -46,15 +46,15 @@
   (sql/db-do-commands db (build-sql-table-commands table-name header-seq)))
 
 (defn insert-csv-data
-  [db table data-rows column-count]
   (let [chunk-size 1000
+  [db table header-seq data-rows column-count]
         process-fn (if (= column-count 8)
                          hc/process-journey-row
                          hc/process-station-row)]
     (for [chunk-of-rows (partition chunk-size data-rows) ]
       (->> (map process-fn chunk-of-rows)
            (remove nil? )
-           (sql/insert-multi! db table)))
+           (sql/insert-multi! db table header-seq)))
     ))
 
 (defn create-table-insert-single-file
@@ -66,8 +66,8 @@
           column-count (count header)
           ]
       (make-sql-table db table-name header)
-      (insert-csv-data db table-name data-rows column-count)
       column-count
+      (insert-csv-data db table-name header data-rows column-count)
       )
     ))
 
@@ -86,7 +86,7 @@
             ;; chunk-size 1000
             ]
         (make-sql-table db table-name header)
-        (insert-csv-data db table-name data-rows column-count)
+        (insert-csv-data db table-name header data-rows column-count)
         ;; (for [chunk-of-rows (partition chunk-size data-rows) ]
           ;; (->> (remove nil? (map process-fn chunk-of-rows))
              ;; (sql/insert-multi! db table)))
