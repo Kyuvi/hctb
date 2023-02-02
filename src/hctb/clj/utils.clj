@@ -34,26 +34,32 @@
 (defn list-files
   "Returns a list of only the files in the directory string `dir`."
   [dir]
-  (->> (file-seq (jio/file dir))
+  ;; (->> (file-seq (jio/file dir))
+  (->> (.listFiles (jio/file dir))
        (remove #(.isDirectory ^java.io.File %))))
 
 (defn list-subdirectories
   "Returns a list of only the subdirectorys of the directory string `dir`"
   [dir]
-  (->> (file-seq (jio/file dir))
-       (filter #(.isDirectory %))
-       (remove #(= % (jio/file dir)))))
+  ;; (->> (file-seq (jio/file dir))
+  ;;      (filter #(.isDirectory %))
+  ;;      (remove #(= % (jio/file dir)))))
+  (->> (.listFiles (jio/file dir))
+       (filter #(.isDirectory %))))
 
 (defn file-suffix?
   "Checks if `file` has a suffix `suffix`. Works on file object types."
   [ ^String suffix ^java.io.File file]
-  (and (.isFile file)
-       (re-find (re-pattern (str ".*\\." suffix "$")) (.getName file))))
+  (when (.isFile file)
+       ;; (re-find (re-pattern (str ".*\\." suffix "$")) (.getName file))))
+       (clojure.string/ends-with? (.getName file) (str "." suffix))))
+
 
 (defn list-files-of-type
   "Returns a list of all files in the directory `dir` with the extension `ext`."
   [dir ext]
-  (->> (file-seq (jio/file dir))
+  ;; (->> (file-seq (jio/file dir))
+  (->> (.listFiles (jio/file dir))
        (filter (partial file-suffix? ext))))
 
         ;;;; numbers ;;;;
