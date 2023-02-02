@@ -1,21 +1,21 @@
 (ns hctb.clj.csvs
   (:require [clojure.data.csv :as csv]
             [java-time :as jt]
-            [hctb.clj.utils :as util]))
+            [hctb.clj.utils :as utils]))
 
 (defn validate-latitude
   [x]
-  (if-let [numa (util/string->double x)]
+  (if-let [numa (utils/string->double x)]
     (when (<= -180 numa 180) numa)))
 
 (defn validate-logtitude
   [x]
-  (if-let [numa (util/string->double x)]
+  (if-let [numa (utils/string->double x)]
     (when (<= -90 numa 90) numa)))
 
 (defn validate-timestamp
   [x]
-  (let [stamp (try util/parse-datetime x
+  (let [stamp (try (utils/parse-datetime x)
                (catch Exception e false))]
     stamp))
 
@@ -26,20 +26,20 @@
 
 (defn validate-pos-int
   [x]
-  (if-let [numa (util/string->long x nil)]
+  (if-let [numa (utils/string->long x nil)]
     (when (pos? numa) numa)))
 
 (defn greater-than-ten
   [x]
-  (if-let [numa (util/string->long x nil)]
+  (if-let [numa (utils/string->long x nil)]
     (when  (> numa 10) numa)))
 
 (defn process-header-strings
   "Replaces whitespaces and periods in header names with underscores."
   [columns]
   (->> columns
-       (map util/periods-to-underscores)
-       (mapv util/spaces-to-underscores)))
+       (map utils/periods-to-underscores)
+       (mapv utils/spaces-to-underscores)))
 
 (defn process-journey-row
   "Ensure that rows in `row-xs` from the 'journey' csvs are of the right type,
