@@ -3,17 +3,39 @@
             [clojure.java.io :as jio] )
   )
 
-        ;;;; time ;;;;
 
-(defn parse-datetime
-[s]
-(jt/local-date-time "yyyy-MM-dd'T'HH:mm:ss" s))
 
-;; 2021-05-31T23:54:48
+        ;;;; numbers ;;;;
 
-;; (de)
-;;
+
+(defn string->bigdec
+  "Returns the BigDecimal that is contained in `string`, otherwise returns nil."
+  [string]
+  (if (re-matches (re-pattern "[-+]?([0-9]*[.])?[0-9]+") string)
+    (bigdec string)
+    nil))
+
+(defn string->long
+  "Returns the Long (base 10 integer) that is contained in `string`,
+   otherwise returns nil.
+  `coerce-pred` determines if a float is coereced to a long or not
+  (if not, nil is returned for a string containing a float)."
+  ([string] (string->long string true))
+  ([string coerce-pred]
+   (let [x (string->bigdec string)
+         coerce-val (when (number? x) (long x))
+         nc-val (when (and coerce-val (== coerce-val x)) coerce-val) ]
+     (if coerce-pred coerce-val nc-val))))
+
+(defn string->double
+  "Returns the Double (float) that is contained in `string`,
+   otherwise returns nil."
+  [string]
+  (let [x (string->bigdec string)]
+    (when (number? x ) (double x))))
+
         ;;;; strings ;;;;
+
 (defn alphanumeric?
   "Test if `string` is completely aphanumeric."
   [string]
@@ -29,7 +51,18 @@
   [string]
   (clojure.string/replace string #"\." "_"))
 
-        ;;;; i/o ;;;;
+        ;;;; time ;;;;
+
+(defn parse-datetime
+  "Convert a string `s` to a datetime format accepted by the database."
+  [s]
+  (jt/local-date-time "yyyy-MM-dd'T'HH:mm:ss" s))
+
+;; 2021-05-31T23:54:48
+
+;; (jt/after?)
+
+        ;;;; I/O ;;;;
 
 (defn list-files
   "Returns a list of only the files in the directory string `dir`."
@@ -61,31 +94,3 @@
   ;; (->> (file-seq (jio/file dir))
   (->> (.listFiles (jio/file dir))
        (filter (partial file-suffix? ext))))
-
-        ;;;; numbers ;;;;
-
-(defn string->bigdec
-  "Returns the BigDecimal that is contained in `string`, otherwise returns nil."
-  [string]
-  (if (re-matches (re-pattern "[-+]?([0-9]*[.])?[0-9]+") string)
-    (bigdec string)
-    nil))
-
-(defn string->long
-  "Returns the Long (base 10 integer) that is contained in `string`,
-   otherwise returns nil.
-  `coerce-pred` determines if a float is coereced to a long or not
-  (if not, false is returned for a string containing a float)."
-  ([string] (string->long string true))
-  ([string coerce-pred]
-  (let [x (string->bigdec string)]
-    (and
-     (if coerce-pred (number? x ) (int? x))
-     (long x)))))
-
-(defn string->double
-  "Returns the Double (float) that is contained in `string`,
-   otherwise returns nil."
-  [string]
-  (let [x (string->bigdec string)]
-  (and (number? x ) (double x))))
