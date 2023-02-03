@@ -3,8 +3,15 @@
   (:require [hctb.clj.sql :as hs]))
 
 
-(def default-csv-dir "/tmp/bike-data" )
+(def default-csv-dir (or (System/getenv "CSVDIR") "/tmp/bike-data" ))
 
+(def default-db {:dbtype "postgresql"
+                 :reWriteBatchedInserts true
+                 :dbname   (or (System/getenv "POSTGERS_DB")  "hctb")
+                 :user     (or (System/getenv "POSTGRES_USER") "postgres")
+                 :password (or (System/getenv "POSTGRES_PASS") "test")} )
+
+(def default-arg (merge default-db {:csvdir default-csv-dir} ))
 (defn -main
   ;; "I don't do a whole lot ... yet."
   ;; [& args]

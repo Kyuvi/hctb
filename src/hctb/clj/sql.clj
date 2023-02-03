@@ -7,11 +7,6 @@
             [hctb.clj.csvs :as hc]
             ))
 
-(def default-db {:dbtype "postgresql"
-                 :reWriteBatchedInserts true
-                 :dbname   (or (System/getenv "POSTGERS_DB")  "hctb")
-                 :user     (or (System/getenv "POSTGRES_USER") "postgres")
-                 :password (or (System/getenv "POSTGRES_PASS") "test")} )
 
 (defn db-connection?
   "Test if there is a connection to the database"
