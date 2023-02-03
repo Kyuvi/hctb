@@ -80,14 +80,14 @@
         ;;;; I/O ;;;;
 
 (defn list-files
-  "Returns a list of only the files in the directory string `dir`."
+  "Returns a list of just the files in the directory string `dir`."
   [dir]
   ;; (->> (file-seq (jio/file dir))
   (->> (.listFiles (jio/file dir))
        (remove #(.isDirectory ^java.io.File %))))
 
 (defn list-subdirectories
-  "Returns a list of only the subdirectorys of the directory string `dir`"
+  "Returns a list of just the subdirectories of the directory string `dir`"
   [dir]
   ;; (->> (file-seq (jio/file dir))
   ;;      (filter #(.isDirectory %))
@@ -104,7 +104,8 @@
 
 
 (defn list-files-of-type
-  "Returns a list of all files in the directory `dir` with the extension `ext`."
+  "Returns a list of all files in the directory `dir` with the extension `ext`.
+   This is not recursive, i.e not from subdirectories"
   [dir ext]
   ;; (->> (file-seq (jio/file dir))
   (->> (.listFiles (jio/file dir))

@@ -37,8 +37,8 @@
     (when  (> numa 10) numa)))
 
 (defn process-header-strings
-  "Replaces characters that conflict with the database in header names
-   with underscores."
+   "Returns a vector with characters that conflict with the database in
+    header names replaced with underscores."
   [columns]
   (->> columns
        (mapv utils/replace-string-conflicts-with-underscores)))
