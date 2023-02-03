@@ -176,8 +176,8 @@
         ;; table-files (remove nil? (concat subdirs loose-files))
         ;; (table-names (map #(.getName %) table-files))
         ]
-    (when subdirs (insert-csvs-from-subdirs db subdirs))
-    (when loose-csv-files (insert-loose-csvs db loose-csv-files))
+    (when-not (empty? subdirs) (insert-csvs-from-subdirs db subdirs))
+    (when-not (empty? loose-csv-files) (insert-loose-csvs db loose-csv-files))
   ))
 
 ;; sql/db-do-commands
