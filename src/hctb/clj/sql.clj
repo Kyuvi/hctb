@@ -97,7 +97,7 @@
   "Insert data from files in `file-list` into database `db`,
    creating new tables based on their filenames."
   [db file-list]
-  (for [csvfile file-list
+  (doseq [csvfile file-list]
     (let [table-name (->> (clojure.string/replace (.getName csvfile) ".csv" "")
                           (utils/replace-string-conflicts-with-underscores))]
 
@@ -114,12 +114,12 @@
     ;;         ]
     ;;     (make-sql-table db table-name header column-count)
     ;;     (insert-csv-data db table-name header data-rows column-count)
-    ;;     ;; (for [chunk-of-rows (partition chunk-size data-rows) ]
+    ;;     ;; (doseq [chunk-of-rows (partition chunk-size data-rows) ]
     ;;       ;; (->> (remove nil? (map process-fn chunk-of-rows))
     ;;          ;; (sql/insert-multi! db table)))
     ;;     )
     ;; )
-))
+)))
 
 (defn insert-csvs-from-subdirs
   "Insert data from files in containded in sub-directories `subdir-list`
@@ -128,7 +128,7 @@
    it is passed to the `insert-loose-csvs` function,
    and a new table is made based on that file."
   [db subdir-list]
-  (for [subdir subdir-list
+  (doseq [subdir subdir-list]
     (let [table-name (utils/replace-string-conflicts-with-underscores
                       (.getName subdir))
           file-list (utils/list-files-of-type subdir "csv")
@@ -136,13 +136,13 @@
           other-files (next file-list)
     ;; process first file to get header-list
           ;; column-count (create-table-insert-single-file db table-name first-file)
-          ]]
+          ]
     (when first-file
     ;; process first file to get subdir table column-count
       (let [column-count
             (create-table-insert-file-data db table-name first-file)]
         (when other-files
-          (for [csvfile other-files] ;;  doseq?
+          (doseq [csvfile other-files] ;;  doseq?
             (with-open [reader (jio/reader csvfile)]
               (let [csv-rows (csv/read-csv reader)
                     next-header (hc/process-header-strings (first csv-rows))
@@ -162,7 +162,7 @@
                         csvfile first-file))
                       (insert-loose-csvs db (list csvfile))
                       )))
-    )))))))
+    ))))))))
 
 
 (defn load-csvs-to-db
