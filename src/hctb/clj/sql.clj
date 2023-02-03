@@ -42,7 +42,7 @@
                        (interpose ",\n")
                        (apply str)  )
          ]
-     (vec
+     (vector
       (format "DROP TABLE IF EXISTS %s;" table-name)
       (format "CREATE TABLE %s (\n%s %s\n);"
               table-name col-defs ending-string))
@@ -63,7 +63,10 @@
           process-fn (if (= column-count 8)
                        hc/process-journey-row
                        hc/process-station-row)]
-      (for [chunk-of-rows (partition chunk-size data-rows) ]
+      ;; (for [chunk-of-rows (partition chunk-size data-rows) ]
+      (doseq [chunk-of-rows (partition-all chunk-size data-rows) ]
+        (print ".")
+        ;; (flush)
         (->> (map process-fn chunk-of-rows)
              (remove nil? )
              (sql/insert-multi! db table header-seq)))
@@ -75,11 +78,11 @@
   [db table-name csvfile]
   (with-open [reader (jio/reader csvfile)]
     (let [csv-rows (csv/read-csv reader)
-          header (apply hc/process-header-strings (first csv-rows))
+          header (hc/process-header-strings (first csv-rows))
           data-rows (rest csv-rows)
           column-count (count header)
           ]
-      (if-not (contains? #{8 11} column-count)
+      (if-not (contains? #{8 13} column-count)
         (throw (Exception.
                 (format "File %s has an unexpected header %s with %s columns."
                         csvfile header column-count)))
@@ -95,7 +98,8 @@
    creating new tables based on their filenames."
   [db file-list]
   (for [csvfile file-list
-    :let [table-name  (.getName csvfile)]]
+    :let [table-name (.getName csvfile)]]
+
     (create-table-insert-file-data db table-name csvfile)
     ;; (with-open [reader (jio/reader csvfile)]
     ;;   (let [csv-rows (csv/read-csv reader)
@@ -139,8 +143,7 @@
           (for [csvfile other-files] ;;  doseq?
             (with-open [reader (jio/reader csvfile)]
               (let [csv-rows (csv/read-csv reader)
-                    next-header (apply hc/process-header-strings
-                                       (first csv-rows))
+                    next-header (hc/process-header-strings (first csv-rows))
                     data-rows (rest csv-rows)
                     next-column-count (count next-header)
                     ]
