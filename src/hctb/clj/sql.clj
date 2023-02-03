@@ -59,7 +59,7 @@
   "Insert data contained in `data-rows` into database `db`
    based on columns from `header-seq`."
   [db table header-seq data-rows column-count]
-    (let [chunk-size 1000
+    (let [chunk-size 10000
           process-fn (if (= column-count 8)
                        hc/process-journey-row
                        hc/process-station-row)]
