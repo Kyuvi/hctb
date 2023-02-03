@@ -19,6 +19,14 @@
     (bigdec string)
     nil))
 
+(defn string->double
+  "Returns the Double (float) that is contained in `string`,
+   otherwise returns nil."
+  [string]
+  ;; (let [x (string->bigdec string)]
+    ;; (when (number? x ) (double x))))
+    (ignore-exception (Double/parseDouble string)))
+
 (defn string->long
   "Returns the Long (base 10 integer) that is contained in `string`,
    otherwise returns nil.
@@ -26,17 +34,15 @@
   (if not, nil is returned for a string containing a float)."
   ([string] (string->long string true))
   ([string coerce-pred]
-   (let [x (string->bigdec string)
+   ;; (let [x (string->bigdec string)
+   (let [x (string->double string)
          coerce-val (when (number? x) (long x))
          nc-val (when (and coerce-val (== coerce-val x)) coerce-val) ]
-     (if coerce-pred coerce-val nc-val))))
+     (if coerce-pred coerce-val nc-val)))
+  ;; [string]
+;; (ignore-exception (Long/parseLong string))
+)
 
-(defn string->double
-  "Returns the Double (float) that is contained in `string`,
-   otherwise returns nil."
-  [string]
-  (let [x (string->bigdec string)]
-    (when (number? x ) (double x))))
 
         ;;;; strings ;;;;
 
