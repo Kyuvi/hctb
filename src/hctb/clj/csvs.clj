@@ -40,8 +40,7 @@
   "Replaces whitespaces and periods in header names with underscores."
   [columns]
   (->> columns
-       (map utils/periods-to-underscores)
-       (mapv utils/spaces-to-underscores)))
+       (mapv utils/replace-string-conflicts-with-underscores)))
 
 (defn process-journey-row
   "Ensure that rows in `row-xs` from the 'journey' csvs are of the right type,
