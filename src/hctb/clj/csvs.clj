@@ -43,7 +43,7 @@
        (mapv utils/replace-string-conflicts-with-underscores)))
 
 (defn process-journey-row
-  "Ensure that rows in `row-xs` from the 'journey' csvs are of the right type,
+  "Ensure that elements in `row-xs` from a 'journey' csv are of the right type,
   if they are, return a vector of the processed strings converted into the
   correct type, else returns nil (rows with distances and durations shorter than
   10 meters and 10 seconds respectively return nil)."
@@ -59,12 +59,13 @@
         duration (greater-than-ten h)
         journey-vector [d-time r-time d-id d-name r-id r-name distance duration]
         ]
-  (when (not-any? boolean? journey-vector)
-    (when (valid-time-sequence? d-time r-time) journey-vector))
-  ))
+    (when (and (not-any? nil? journey-vector)
+               (valid-time-sequence? d-time r-time))
+      journey-vector))
+  )
 
 (defn process-station-row
-  "Ensure that rows in `row-xs` from the 'station' csv(s) are of the right type,
+  "Ensure that elements in `row-xs` from a 'station' csv are of the right type,
   if they are, return a vector of the processed strings converted into the
   correct type, else returns nil"
   [row-xs]
@@ -75,8 +76,8 @@
         cap (validate-pos-int k)
         long (validate-logtitude l)
         lat (validate-latitude m)
-        station-vector (vec (concat [fid s-id] [str-vec] [cap long lat] ) )
+        station-vector (vec (concat [fid s-id] str-vec [cap long lat] ) )
         ;; station-vector [fid s-id c d e f g h i j cap long lat]
         ]
-    (when (not-any? boolean? station-vector ) station-vector))
+    (when (not-any? nil? station-vector) station-vector))
   )
