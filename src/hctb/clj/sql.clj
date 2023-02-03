@@ -98,7 +98,8 @@
    creating new tables based on their filenames."
   [db file-list]
   (for [csvfile file-list
-    :let [table-name (.getName csvfile)]]
+    (let [table-name (->> (clojure.string/replace (.getName csvfile) ".csv" "")
+                          (utils/replace-string-conflicts-with-underscores))]
 
     (create-table-insert-file-data db table-name csvfile)
     ;; (with-open [reader (jio/reader csvfile)]
@@ -128,7 +129,8 @@
    and a new table is made based on that file."
   [db subdir-list]
   (for [subdir subdir-list
-    :let [table-name (.getName subdir)
+    (let [table-name (utils/replace-string-conflicts-with-underscores
+                      (.getName subdir))
           file-list (utils/list-files-of-type subdir "csv")
           first-file (first file-list)
           other-files (next file-list)

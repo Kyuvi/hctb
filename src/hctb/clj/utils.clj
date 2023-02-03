@@ -11,7 +11,6 @@
 
         ;;;; numbers ;;;;
 
-
 (defn string->bigdec
   "Returns the BigDecimal that is contained in `string`, otherwise returns nil."
   [string]
@@ -62,9 +61,9 @@
   (clojure.string/replace string #"\." "_"))
 
 (defn replace-string-conflicts-with-underscores
-  "Replaces all parenthesis,spaces and periods with underscores."
+  "Replaces all hyphens, parenthesis, spaces and periods with underscores."
   [string]
-  (clojure.string/replace string #"\(|\)|\s|\." "_"))
+  (clojure.string/replace string #"-|\(|\)|\s|\." "_"))
 
         ;;;; time ;;;;
 

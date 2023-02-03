@@ -37,7 +37,8 @@
     (when  (> numa 10) numa)))
 
 (defn process-header-strings
-  "Replaces whitespaces and periods in header names with underscores."
+  "Replaces characters that conflict with the database in header names
+   with underscores."
   [columns]
   (->> columns
        (mapv utils/replace-string-conflicts-with-underscores)))
