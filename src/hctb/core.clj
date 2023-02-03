@@ -2,17 +2,20 @@
   (:gen-class)
   (:require [hctb.clj.sql :as hs]))
 
+
+(def default-csv-dir "/tmp/bike-data" )
+
 (defn -main
   ;; "I don't do a whole lot ... yet."
   ;; [& args]
   ([] (-main hs/default-db ))
   ([db]
-   (let [csvdir (System/getenv "CSVDIR")]
-     (when-not csvdir
-       (throw
-        (Exception.
-         "No CSVDIR, please specify a directory as the CSVDIR environment variable.")))
+   (let [csvdir (or (System/getenv "CSVDIR") default-csv-dir)]
+     (when  (= csvdir default-data-directory)
+       (println (str "WARNING: No CSVDIR given as an environment variable,\n"
+                     "using default directory." default-data-directory ".")))
      (when-not (hs/db-connection? db)
       (throw (Exception. (str "Unable to connect to DB:" db))))
      (hs/load-csvs-to-db db csvdir)
-     (format "HSL City bikes data in database %s !" (:name db-name)))))
+     (println (format "%nHSL City bikes data in database %s!" (:dbname db)))
+)))

@@ -155,10 +155,10 @@
                                    data-rows next-column-count)
                   ;; if count is different emit warning
                   ;; and process file as a loose file
-                  (do (println
-                       (format
-                        "WARNING: File %s has a different column count than %s,
-                   so creating individual table."
+                  (do (println (format
+                        (str
+                         "WARNING: File %s has a different column count than %s,"
+                         " so creating individual table.")
                         csvfile first-file))
                       (insert-loose-csvs db (list csvfile))
                       )))
