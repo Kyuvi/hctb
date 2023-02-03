@@ -4,6 +4,10 @@
   )
 
 
+(defmacro ignore-exception
+  "Evaluates form and returns result or 'nil' if an exception is thrown."
+  [form]
+  `(try ~form (catch ~Exception ~'e nil)))
 
         ;;;; numbers ;;;;
 
