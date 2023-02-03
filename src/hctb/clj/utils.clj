@@ -61,6 +61,11 @@
   [string]
   (clojure.string/replace string #"\." "_"))
 
+(defn replace-string-conflicts-with-underscores
+  "Replaces all parenthesis,spaces and periods with underscores."
+  [string]
+  (clojure.string/replace string #"\(|\)|\s|\." "_"))
+
         ;;;; time ;;;;
 
 (defn parse-datetime
