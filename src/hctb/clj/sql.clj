@@ -23,7 +23,8 @@
 
 (def station-types ["integer" "integer"  "text"  "text"  "text"  "text"  "text"
                     "text" "text" "text" "integer"
-                    "double_precision" "double_precision"])
+                    ;; "double precision" "double precision"])
+                    "real" "real"])
 
 (defn build-sql-table-commands
   "Returns a vector of strings used to drop an existing table of `table-name`,
