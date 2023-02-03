@@ -15,9 +15,11 @@
 
 (defn validate-timestamp
   [x]
-  (let [stamp (try (utils/parse-datetime x)
-               (catch Exception e false))]
-    stamp))
+  ;; (let [stamp (try (utils/parse-datetime x)
+               ;; (catch Exception e false))]
+    ;; stamp))
+  (utils/ignore-exception (utils/parse-datetime x)))
+
 
 (defn valid-time-sequence?
   [start-time stop-time]
