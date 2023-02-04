@@ -43,12 +43,12 @@
                        (flush)
                        default-arg))
          ;; build database spec
-         db {:dbtype (get-arg-key :dbtype arg-map)
+         db {:dbtype (:dbtype default-db) ;; (get-arg-key :dbtype arg-map)
              :dbname (get-arg-key :dbname arg-map)
              :user (get-arg-key :user arg-map)
              :password (get-arg-key :password arg-map)
-             :reWriteBatchedInsert
-             (get-arg-key :reWriteBatchedInsert arg-map)
+             ;; :reWriteBatchedInsert
+             ;; (get-arg-key :reWriteBatchedInsert arg-map)
              }
          ;; get csv directory
          csvdir (get-arg-key :csvdir arg-map)]
