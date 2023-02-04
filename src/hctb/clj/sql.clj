@@ -63,7 +63,7 @@
       ;; (for [chunk-of-rows (partition chunk-size data-rows) ]
       (doseq [chunk-of-rows (partition-all chunk-size data-rows) ]
         (print ".")
-        ;; (flush)
+        (flush)
         (->> (map process-fn chunk-of-rows)
              (remove nil? )
              (sql/insert-multi! db table header-seq)))
