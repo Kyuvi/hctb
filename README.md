@@ -1,6 +1,6 @@
 # hctb
 
-Helsinki city bike app 
+### Helsinki city bike app 
 
 The final aim of this project is to create a web app to view the city-bike stations and the data of the journeys between those stations.
 
@@ -30,7 +30,7 @@ This app has only been tested and used on a machine running linux with postgreSQ
 
 ## Installation
 
-Download from http://example.com/FIXME.
+Download from https://github.com/Kyuvi/hctb 
 
 ## Usage
 Can be run directly from the command line with `lein run`
