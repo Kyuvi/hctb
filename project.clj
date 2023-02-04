@@ -1,8 +1,8 @@
 (defproject hctb "0.1.0-SNAPSHOT"
   :description "Helsiki City Bike App"
   :url "https://github.com/Kyuvi/hctb"
-  :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
-            :url "https://www.eclipse.org/legal/epl-2.0/"}
+  :license {:name "GPL-3.0-or-later WITH Classpath-exception-2.0"
+            :url "https://www.gnu.org/licenses/gpl-3.0.html" }
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [org.clojure/data.csv "0.1.4"]
                  [org.clojure/java.jdbc "0.7.10"]
