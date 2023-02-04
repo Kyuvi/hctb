@@ -26,16 +26,22 @@ It validates the data based on the following criteria, if the criteria is not me
 
 - There are no empty strings (strings contining only spaces are recognized as valid).
 
-This app has only been tested and used on a machine running linux with postgreSQL (running in docker). The default directory and database options reflect this. There is a possibility to change the defaults (see usage below) but I have not tested them on another OS yet.
+This app has only been tested and used on a machine running linux with postgreSQL (running in docker). The default directory and database options reflect this. There is a possibility to change the defaults (see [usage](##-usage) below) but I have not tested them on another OS yet.
 
 ## Installation
 
-Download from https://github.com/Kyuvi/hctb 
+Download from https://github.com/Kyuvi/hctb .
+
+Then run `lein uberjar` from the directory with the project.clj file (and README.md)
+
+The /target/uberjar directory should contatin a file ending '*-standalone.jar' this can then be used to trancfer data from the correct csv files to a postgreSQL database 
+
 
 ## Usage
+
 Can be run directly from the command line with `lein run`
 
-or after building a jar file with 
+or after building a jar file (see [installation](##-installation) above) with 
 
     $ java -jar hctb-0.1.0-standalone.jar [arg]
     
