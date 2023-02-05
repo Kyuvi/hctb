@@ -168,13 +168,16 @@
    sub-directory names. Ideally files containded in sub-directories should
    all have of similar contents."
   [db csvdir]
-  (let [subdirs (utils/list-subdirectories csvdir)
-        loose-csv-files (utils/list-files-of-type csvdir "csv")
+  (let [subdirs (not-empty (utils/list-subdirectories csvdir))
+        loose-csv-files (not-empty (utils/list-files-of-type csvdir "csv"))
+
         ;; table-files (remove nil? (concat subdirs loose-files))
         ;; (table-names (map #(.getName %) table-files))
         ]
-    (when-not (empty? subdirs) (insert-csvs-from-subdirs db subdirs))
-    (when-not (empty? loose-csv-files) (insert-loose-csvs db loose-csv-files))
+    (when-not (or subdirs loose-csv-files)
+      (throw (Exception. "No valid files in provided directory, Aborting!")))
+    (when subdirs (insert-csvs-from-subdirs db subdirs))
+    (when loose-csv-files (insert-loose-csvs db loose-csv-files))
   ))
 
 ;; sql/db-do-commands
