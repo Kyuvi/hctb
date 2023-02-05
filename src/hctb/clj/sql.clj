@@ -126,40 +126,43 @@
    and a new table is made based on that file."
   [db subdir-list]
   (doseq [subdir subdir-list]
-    (let [table-name (utils/replace-string-conflicts-with-underscores
-                      (.getName subdir))
+    (let [subdir-name (.getName subdir)
+          table-name (utils/replace-string-conflicts-with-underscores
+                      subdir-name )
           file-list (utils/list-files-of-type subdir "csv")
           first-file (first file-list)
           other-files (next file-list)
     ;; process first file to get header-list
           ;; column-count (create-table-insert-single-file db table-name first-file)
           ]
-    (when first-file
-    ;; process first file to get subdir table column-count
-      (let [column-count
-            (create-table-insert-file-data db table-name first-file)]
-        (when other-files
-          (doseq [csvfile other-files] ;;  doseq?
-            (with-open [reader (jio/reader csvfile)]
-              (let [csv-rows (csv/read-csv reader)
-                    next-header (hc/process-header-strings (first csv-rows))
-                    data-rows (rest csv-rows)
-                    next-column-count (count next-header)
-                    ]
-                (if (= column-count next-column-count )
-                  ;; skip making table for the rest of the similar files
-                  (insert-csv-data db table-name next-header
-                                   data-rows next-column-count)
-                  ;; if count is different emit warning
-                  ;; and process file as a loose file
-                  (do (println (format
-                        (str
-                         "WARNING: File %s has a different column count than %s,"
-                         " so creating individual table.")
-                        csvfile first-file))
-                      (insert-loose-csvs db (list csvfile))
-                      )))
-    ))))))))
+    (if  first-file
+      (do (println (str "processing table: " table-name))
+          ;; process first file to get subdir table column-count
+          (let [column-count
+                (create-table-insert-file-data db table-name first-file)]
+            (when other-files
+              (doseq [csvfile other-files] ;;  doseq?
+                (with-open [reader (jio/reader csvfile)]
+                  (let [csv-rows (csv/read-csv reader)
+                        next-header (hc/process-header-strings (first csv-rows))
+                        data-rows (rest csv-rows)
+                        next-column-count (count next-header)
+                        ]
+                    (if (= column-count next-column-count )
+                      ;; skip making table for the rest of the similar files
+                      (insert-csv-data db table-name next-header
+                                       data-rows next-column-count)
+                      ;; if count is different emit warning
+                      ;; and process file as a loose file
+                      (do (println
+                           (format
+                            (str
+                             "WARNING: File %s has a different column count than %s,"
+                             " so creating individual table.")
+                            csvfile first-file))
+                          (insert-loose-csvs db (list csvfile))
+                          ))))))))
+      (println (format "WARNING: No files found in subdir %s" subdir-name))))))
 
 
 (defn load-csvs-to-db
