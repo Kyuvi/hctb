@@ -9,7 +9,7 @@ WORKDIR /app
 COPY hctb-0.1.0-SNAPSHOT-standalone.jar .
 
 # Set environment variables
-ENV CSVDIR=/tmp/bike-data
+ENV CSVDIR=/etc/bike-data
 ENV POSTGRES_HOST=mydb
 ENV POSTGRES_DB=hctb
 ENV POSTGRES_USER=postgres

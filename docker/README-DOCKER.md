@@ -20,7 +20,7 @@ then set up a postgres image and container.
 which can be linked to by running `psql` in a seperate container using the following instruction.
 
     [sudo] docker run -it --rm 
-    --link my-postgres-container:postgres postgres psql -h postgres -U postgres
+    --link postgres-container:postgres postgres psql -h postgres -U postgres
 
 then create the database
 
@@ -30,9 +30,11 @@ then create the database
 and then (on a different terminal), run
 
     sudo docker run -it 
-    --link postgre-container:postgres --env CSVDIR=/etc/bike-data
+    --link postgres-container:postgres --env CSVDIR=/etc/bike-data
     --env POSTGRES_HOST=postgres-container 
     --mount type=bind,source=/path/to/data-dir,target=/etc/bike-data --rm imagename 
+
+NOTE: whatever other environment variables that you might need to change from the default in the hctb-dockerfile should each be put after a `--env` option. 
 
 
 This should load the csv data from the given directory to the database hctb in the postgres container to be used by the front end. this can be checked from the psql terminal by typing
