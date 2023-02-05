@@ -61,18 +61,16 @@ It also checks for the following environment variables
     POSTGRES_USER
     POSTGRES_PASS
     
-For the database host, database name, database user, and database password  respectively. This is the recommenced way to use this app, particularly when using a docker image (see the docker README in the docker folder)
+For the database host, database name, database user, and database password  respectively. 
 
 if it finds none it reverts to the defaults specified in the source code.
 
 
 ...
 
-### Known Bugs
+### Bugs
 
-Passing it a folder with empty subdirectories will only issue a warning and try to continue processing instead of throwing an exception.
-
-It also prints out all the station data when called from the command line, but I think this is something to do with postgreSQL.
+Please open an issue if one is found, thanks
 
 ...
 
