@@ -1,0 +1,28 @@
+# Use https://hub.docker.com/_/oracle-serverjre-8
+FROM eclipse-temurin:11
+
+# Make a directory
+RUN mkdir -p /app
+WORKDIR /app
+
+# Copy only the target jar over
+# COPY hctb-0.1.0-SNAPSHOT-standalone.jar .
+COPY hctb-0.1.0-SNAPSHOT-standalone.jar .
+
+# Set environment variables
+ENV CSVDIR=/tmp/bike-data
+ENV POSTGRES_HOST=mydb
+ENV POSTGRES_DB=hctb
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASS=kotoba
+
+# Open the port
+EXPOSE 3000
+
+# Run the JAR
+# CMD java -jar hctb-0.1.0-SNAPSHOT-standalone.jar
+ENTRYPOINT  [ "java", "-jar", "hctb-0.1.0-SNAPSHOT-standalone.jar" ]
+# ENTRYPOINT  java -jar hctb-0.1.0-SNAPSHOT-standalone.jar
+# ENTRYPOINT  ["java", "-jar"]
+# CMD  ["{:host \"mydb\"}"]
+# CMD ["hctb-0.1.0-SNAPSHOT-standalone.jar"]
