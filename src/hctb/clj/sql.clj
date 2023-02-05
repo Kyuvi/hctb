@@ -28,12 +28,7 @@
    (build-sql-table-commands table-name header-seq column-count ""))
   ([table-name header-seq column-count ending-string]
    (let [journey-prep (= column-count 8)
-         ;; table-name (if journey-prep file-name "Hsl_bike_stations")
          table-types (if journey-prep journey-types station-types)
-         ;; col-defs (apply
-         ;;           str (interpose ",\n" (map (fn [col t-type]
-         ;;                                       (format"\t%s %s" col t-type ))
-         ;;                                     header-seq table-types)))
          col-defs (->> (map (fn [col t-type] (format"\t%s %s" col t-type ))
                             header-seq table-types)
                        (interpose ",\n")
@@ -60,7 +55,6 @@
           process-fn (if (= column-count 8)
                        hc/process-journey-row
                        hc/process-station-row)]
-      ;; (for [chunk-of-rows (partition chunk-size data-rows) ]
       (doseq [chunk-of-rows (partition-all chunk-size data-rows) ]
         (print ".")
         (flush)
@@ -97,25 +91,7 @@
   (doseq [csvfile file-list]
     (let [table-name (->> (clojure.string/replace (.getName csvfile) ".csv" "")
                           (utils/replace-string-conflicts-with-underscores))]
-
-    (create-table-insert-file-data db table-name csvfile)
-    ;; (with-open [reader (jio/reader csvfile)]
-    ;;   (let [csv-rows (csv/read-csv reader)
-    ;;         header (apply hc/process-header-strings (first csv-rows))
-    ;;         data-rows (rest csv-rows)
-    ;;         column-count (count header)
-    ;;         ;; process-fn (if (= column-count 8)
-    ;;         ;;              hc/process-journey-row
-    ;;         ;;              hc/process-station-row)
-    ;;         ;; chunk-size 1000
-    ;;         ]
-    ;;     (make-sql-table db table-name header column-count)
-    ;;     (insert-csv-data db table-name header data-rows column-count)
-    ;;     ;; (doseq [chunk-of-rows (partition chunk-size data-rows) ]
-    ;;       ;; (->> (remove nil? (map process-fn chunk-of-rows))
-    ;;          ;; (sql/insert-multi! db table)))
-    ;;     )
-    ;; )
+      (create-table-insert-file-data db table-name csvfile)
 )))
 
 (defn insert-csvs-from-subdirs
@@ -132,8 +108,6 @@
           file-list (utils/list-files-of-type subdir "csv")
           first-file (first file-list)
           other-files (next file-list)
-    ;; process first file to get header-list
-          ;; column-count (create-table-insert-single-file db table-name first-file)
           ]
     (if  first-file
       (do (println (str "processing table: " table-name))
@@ -173,15 +147,9 @@
   [db csvdir]
   (let [subdirs (not-empty (utils/list-subdirectories csvdir))
         loose-csv-files (not-empty (utils/list-files-of-type csvdir "csv"))
-
-        ;; table-files (remove nil? (concat subdirs loose-files))
-        ;; (table-names (map #(.getName %) table-files))
         ]
     (when-not (or subdirs loose-csv-files)
       (throw (Exception. "No valid files in provided directory, Aborting!")))
     (when subdirs (insert-csvs-from-subdirs db subdirs))
     (when loose-csv-files (insert-loose-csvs db loose-csv-files))
   ))
-
-;; sql/db-do-commands
-;; sql/insert-multi!
