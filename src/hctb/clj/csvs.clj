@@ -3,31 +3,31 @@
             [java-time :as jt]
             [hctb.clj.utils :as utils]))
 
-(defn validate-latitude
-  [x]
-  (if-let [numa (utils/string->double x)]
-    (when (<= -180 numa 180) numa)))
-
-(defn validate-logtitude
-  [x]
-  (if-let [numa (utils/string->double x)]
-    (when (<= -90 numa 90) numa)))
-
-(defn validate-timestamp
-  [x]
-  (utils/ignore-exception (utils/parse-datetime x)))
-
 
 (defn valid-time-sequence?
   [start-time stop-time]
   (jt/after? stop-time start-time))
 
-(defn validate-pos-int
+(defn process-timestamp
+  [x]
+  (utils/ignore-exception (utils/parse-datetime x)))
+
+(defn process-latitude
+  [x]
+  (if-let [numa (utils/string->double x)]
+    (when (<= -180 numa 180) numa)))
+
+(defn process-logtitude
+  [x]
+  (if-let [numa (utils/string->double x)]
+    (when (<= -90 numa 90) numa)))
+
+(defn process-pos-int
   [x]
   (if-let [numa (utils/string->long x nil)]
     (when (pos? numa) numa)))
 
-(defn greater-than-ten
+(defn int-str-greater-than-ten
   [x]
   (if-let [numa (utils/string->long x nil)]
     (when  (> numa 10) numa)))
@@ -46,14 +46,14 @@
   10 meters and 10 seconds respectively return nil)."
   [row-xs]
   (let [[a b c d e f g h ] row-xs
-        d-time (validate-timestamp a)
-        r-time (validate-timestamp b)
-        d-id (validate-pos-int c)
+        d-time (process-timestamp a)
+        r-time (process-timestamp b)
+        d-id (process-pos-int c)
         d-name (not-empty d)
-        r-id (validate-pos-int e)
+        r-id (process-pos-int e)
         r-name (not-empty f)
-        distance (greater-than-ten g)
-        duration (greater-than-ten h)
+        distance (int-str-greater-than-ten g)
+        duration (int-str-greater-than-ten h)
         journey-vector [d-time r-time d-id d-name r-id r-name distance duration]]
     (when (and (not-any? nil? journey-vector)
                (valid-time-sequence? d-time r-time))
@@ -65,11 +65,11 @@
   correct type, else returns nil"
   [row-xs]
   (let [[a b c d e f g h i j k l m] row-xs
-        fid (validate-pos-int a)
-        s-id (validate-pos-int b)
+        fid (process-pos-int a)
+        s-id (process-pos-int b)
         str-vec (mapv not-empty [c d e f g h i j])
-        cap (validate-pos-int k)
-        long (validate-logtitude l)
-        lat (validate-latitude m)
+        cap (process-pos-int k)
+        long (process-logtitude l)
+        lat (process-latitude m)
         station-vector (vec (concat [fid s-id] str-vec [cap long lat] ))]
     (when (not-any? nil? station-vector) station-vector)))
