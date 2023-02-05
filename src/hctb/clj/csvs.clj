@@ -3,34 +3,51 @@
             [java-time :as jt]
             [hctb.clj.utils :as utils]))
 
+        ;;;; helper functions ;;;;
 
-(defn valid-time-sequence?
+(defn- valid-time-sequence?
+  "Returns true if `start-time` timestamp is before `stop-time` timestamp "
   [start-time stop-time]
   (jt/after? stop-time start-time))
 
-(defn process-timestamp
+(defn- process-timestamp
+  "Returns a timestamp from string x or nil if string does not contain
+   a valid timestamp."
   [x]
   (utils/ignore-exception (utils/parse-datetime x)))
 
-(defn process-latitude
+(defn- process-latitude
+  "Returns a latitude from string x or nil if string does not contain
+   a valid latitude."
   [x]
   (if-let [numa (utils/string->double x)]
     (when (<= -180 numa 180) numa)))
 
-(defn process-logtitude
+(defn- process-logtitude
+  "Returns a longtitude from string x or nil if string does not contain
+   a valid longtitude."
   [x]
   (if-let [numa (utils/string->double x)]
     (when (<= -90 numa 90) numa)))
 
-(defn process-pos-int
+(defn- process-pos-int
+  "Returns a positive integer from string x or nil if string does not contain
+   a valid positive integer."
   [x]
   (if-let [numa (utils/string->long x nil)]
     (when (pos? numa) numa)))
 
-(defn int-str-greater-than-ten
+(defn- int-str-greater-than-ten
+  "Returns an integer greater than 10 from string x or nil if string does not contain
+   a valid integer greater than 10."
   [x]
   (if-let [numa (utils/string->long x nil)]
     (when  (> numa 10) numa)))
+
+
+
+        ;;;; main functions ;;;;
+
 
 (defn process-header-strings
    "Returns a vector with characters that conflict with the database in
