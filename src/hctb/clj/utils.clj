@@ -91,3 +91,10 @@
   [dir ext]
   (->> (.listFiles (jio/file dir))
        (filter (partial file-suffix? ext))))
+
+(defn list-files-of-type-rec
+  "Returns a list of all files in the directory `dir` and its sub-diretories
+  with the extension `ext`."
+  [dir ext]
+  (->> (file-seq (jio/file dir))
+       (filter (partial file-suffix? ext))))

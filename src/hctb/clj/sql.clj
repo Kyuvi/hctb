@@ -136,10 +136,11 @@
    sub-directory names. Ideally files containded in sub-directories should
    all have of similar contents."
   [db csvdir]
-  (let [subdirs (not-empty (utils/list-subdirectories csvdir))
-        loose-csv-files (not-empty (utils/list-files-of-type csvdir "csv"))
-        ]
-    (when-not (or subdirs loose-csv-files)
-      (throw (Exception. "No valid files in provided directory, Aborting!")))
+  (let [all-csv-files (not-empty (utils/list-files-of-type-rec csvdir "csv"))
+        subdirs (not-empty (utils/list-subdirectories csvdir))
+        loose-csv-files (not-empty (utils/list-files-of-type csvdir "csv"))]
+    (when-not all-csv-files
+      (throw (Exception.
+         (format "No valid files in provided directory %s, Aborting!" csvdir))))
     (when subdirs (insert-csvs-from-subdirs db subdirs))
     (when loose-csv-files (insert-loose-csvs db loose-csv-files))))
