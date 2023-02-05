@@ -91,6 +91,7 @@
   (doseq [csvfile file-list]
     (let [table-name (->> (clojure.string/replace (.getName csvfile) ".csv" "")
                           (utils/replace-string-conflicts-with-underscores))]
+      (println (str "processing table: " table-name))
       (create-table-insert-file-data db table-name csvfile)
 )))
 
