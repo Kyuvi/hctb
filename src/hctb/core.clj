@@ -15,8 +15,9 @@
   ([]
    (-main (System/getenv "CSVDIR") ))
   ([dir]
-     (let [csvdir dir, db db-spec]
-    (when-not csvdir
+     (let [csvdir (or (System/getenv "CSVDIR") dir) ;; CSVDIR overides argument
+           db db-spec]
+    (when-not (and csvdir (string? csvdir))
       (throw
        (Exception.
         "No csv directory provided as an argument or as a CSVDIR environment variable")))
