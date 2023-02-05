@@ -16,80 +16,64 @@ If the directory contains loose files, it creates a table named after each file 
 ### Data 
 It validates the data based on the following criteria, if the criteria is not met by one element of the row, the whole row is discarded.
 
-- timestamps are valid timestamps without timezones and the return time is after the departure time.
+- Timestamps are valid timestamps without timezones and the return time is after the departure time.
 
-- journeys are have a duration in integers longer than 10 seconds and cover a distance more than 10 meters.
+- Journeys are have a duration in integers longer than 10 seconds and cover a distance more than 10 meters.
 
-- longtitude and latitude are valid floating point numbers.
+- Longtitude and latitude are valid floating point numbers.
 
 - Ids are positive integers.
 
 - There are no empty strings (strings contining only spaces are recognized as valid).
 
-This app has only been tested and used on a machine running linux with postgreSQL (running in docker). The default directory and database options reflect this. There is a possibility to change the defaults (see [usage](#usage) below) but I have not tested them on another OS yet.
+This app has only been tested and used on a machine running linux with postgreSQL (running in docker). The default directory and database options reflect this. There is a possibility to change the defaults (see [usage](#usage) below) but I have not tested them on another OS yet (nor with another database).
 
 ## Installation
 
 Download from https://github.com/Kyuvi/hctb .
 
-Then run `lein uberjar` from the directory with the project.clj file (and README.md)
+Then run `lein uberjar` from the directory with the project.clj file (and this README.md)
 
-The /target/uberjar directory should contatin a file ending '*-standalone.jar' this can then be used to trancfer data from the correct csv files to a postgreSQL database 
+The target/uberjar directory should contatin a file ending '*-standalone.jar' this can then be used to transfer data from the correct csv files to a postgreSQL database 
 
 
 ## Usage
+As mentioned earlier, this app  expects a postgreSQL database to have been set up and be running.
 
-Can be run directly from the command line with `lein run`
+It can be run directly from the command line with `lein run`
 
-or after building a jar file (see [installation](#installation) above) with 
+or after building a standalone.jar file (see [installation](#installation) above) with 
 
-    $ java -jar hctb-0.1.0-standalone.jar [arg]
+    $ java -jar hctb-0.1.0-standalone.jar ["/path/to/csvdir"]
+or
+
+    $ CSVDIR=/path/to/csvdir java -jar hctb-0.1.0-standalone.jar 
+     
     
-It accepts one argument which should be a string of a (clojure) map consisting of one or more of the following keyword and string pairs
+It accepts one argument which should be a string of a path to the folder/directory  containing the csv files.
     
-    :csvdir "/path/to/csvdir"
-    :dbname "dbname"
-    :user "user"
-    :password "password"
-    
-NOTE: The password is not hidden and will be visible to anyone looking and with access to your history!
+If that is not given, it then checks the system for the 'CSVDIR' environment variable which can be prepended to the call to execte the jar file as shown above.
 
+It also checks for the following environment variables
 
-If those are not given, it then checks the system for the following environment variables
-
-    CSVDIR 
-    POSTGERS_DB
+    POSTGRES_HOST
+    POSTGRES_DB
     POSTGRES_USER
     POSTGRES_PASS
     
-For the directory database name, database user, and database password respectively
+For the database host, database name, database user, and database password  respectively. This is the recommenced way to use this app, particularly when using a docker image (see the docker README in the docker folder)
 
-if it finds none it reverts to the defaults specified in the source code
+if it finds none it reverts to the defaults specified in the source code.
 
-which are 
-
-    :csvdir "/tmp/bike-data"
-    :dbname "hctb"
-    :user "postgres"
-    :password "test"
-
-## Options
-
-FIXME: listing of options this app accepts.
-
-## Examples
 
 ...
 
 ### Known Bugs
 
-Passing a password with an empty string will cause an error when using the postgreSQL database. This seems to be an issue between clojure.java.jdbc and the postgreSQL database, with the database not accepting a db-spec with an empty string as a password.
+Passing it a folder with empty subdirectories will only issue a warning and try to continue processing instead of throwing an exception.
 
+It also prints out all the station data when called from the command line, but I think this is something to do with postgreSQL.
 ...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
 
 ## License
 
