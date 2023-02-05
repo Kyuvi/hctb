@@ -2,7 +2,7 @@
   (:require  [hctb.clj.csvs :as csv]
              [clojure.test :as t ]))
 
-   ;; due to time constraints and the stateful nature of the database files
+   ;; Due to time constraints and the stateful nature of the database files
    ;; I decided these were the main functions that needed to be tested
 
 

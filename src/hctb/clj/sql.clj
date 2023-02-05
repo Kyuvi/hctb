@@ -1,4 +1,6 @@
 (ns hctb.clj.sql
+  "Namespace with functions for creating SQL tables in a database and loading data
+   from csv files in a given directory."
  (:require [clojure.data.csv :as csv]
             [java-time :as jt]
             [clojure.java.io :as jio]

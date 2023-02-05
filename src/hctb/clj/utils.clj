@@ -1,4 +1,6 @@
 (ns hctb.clj.utils
+  "Namespace with clojure utility functions for use in hctb
+   which are not specific to this project and can be useful elsewhere"
   (:require [java-time :as jt]
             [clojure.java.io :as jio] )
   )

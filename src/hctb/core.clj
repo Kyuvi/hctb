@@ -1,4 +1,6 @@
 (ns hctb.core
+  "Core namespace for hctb(Helsinki city bike app), an application for analysing
+   journey and station data about Helsinkis city bikes."
   (:gen-class)
   (:require [hctb.clj.sql :as hs]))
 

@@ -1,4 +1,6 @@
 (ns hctb.clj.csvs
+  "Namespace for processing the output of csv files containing
+   bike journey and station data."
   (:require [clojure.data.csv :as csv]
             [java-time :as jt]
             [hctb.clj.utils :as utils]))
