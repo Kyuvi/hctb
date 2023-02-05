@@ -42,7 +42,7 @@ As mentioned earlier, this app  expects a postgreSQL database to have been set u
 
 It can be run directly from the command line with `lein run`
 
-or after building a standalone.jar file (see [installation](#installation) above) with 
+or after building a standalone.jar file (see [installation](#installation) above), with 
 
     $ java -jar hctb-0.1.0-standalone.jar ["/path/to/csvdir"]
 or
@@ -73,6 +73,7 @@ if it finds none it reverts to the defaults specified in the source code.
 Passing it a folder with empty subdirectories will only issue a warning and try to continue processing instead of throwing an exception.
 
 It also prints out all the station data when called from the command line, but I think this is something to do with postgreSQL.
+
 ...
 
 ## License
