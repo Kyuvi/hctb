@@ -8,7 +8,7 @@ First build a jar file with instructions from the project README.org
 
 and then from this directory, run
 
-    [sudo] docker build --tag imagenamme -f hctb-dockerfile ../target/uberjar/ 
+    [sudo] docker build --tag imagename -f hctb-dockerfile ../target/uberjar/ 
    
 then set up a postgres image and container.
 
@@ -32,7 +32,7 @@ and then (on a different terminal), run
     sudo docker run -it 
     --link postgre-container:postgres --env CSVDIR=/etc/bike-data
     --env POSTGRES_HOST=postgres-container 
-    --mount type=bind,source=/path/to/data-dir,target=/etc/bike-data --rm hctb 
+    --mount type=bind,source=/path/to/data-dir,target=/etc/bike-data --rm imagename 
 
 
 This should load the csv data from the given directory to the database hctb in the postgres container to be used by the front end. this can be checked from the psql terminal by typing
