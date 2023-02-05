@@ -52,7 +52,8 @@ or
     
 It accepts one argument which should be a string of a path to the folder/directory  containing the csv files.
     
-If that is not given, it then checks the system for the 'CSVDIR' environment variable which can be prepended to the call to execte the jar file as shown above.
+If that is not given, it then checks the system for the 'CSVDIR' environment variable which can be prepended to the call to execte the jar file as shown above. 
+NOTE: if both the CSVDIR environment variable and an argument are provided the CSVDIR environment variable is used.
 
 It also checks for the following environment variables
 
