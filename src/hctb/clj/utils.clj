@@ -12,19 +12,10 @@
 
         ;;;; numbers ;;;;
 
-(defn string->bigdec
-  "Returns the BigDecimal that is contained in `string`, otherwise returns nil."
-  [string]
-  (if (re-matches (re-pattern "[-+]?([0-9]*[.])?[0-9]+") string)
-    (bigdec string)
-    nil))
-
 (defn string->double
   "Returns the Double (float) that is contained in `string`,
    otherwise returns nil."
   [string]
-  ;; (let [x (string->bigdec string)]
-    ;; (when (number? x ) (double x))))
     (ignore-exception (Double/parseDouble string)))
 
 (defn string->long
@@ -34,7 +25,6 @@
   (if not, nil is returned for a string containing a float)."
   ([string] (string->long string true))
   ([string coerce-pred]
-   ;; (let [x (string->bigdec string)
    (let [x (string->double string)
          coerce-val (when (number? x) (long x))
          nc-val (when (and coerce-val (== coerce-val x)) coerce-val) ]
@@ -42,7 +32,6 @@
   ;; [string]
 ;; (ignore-exception (Long/parseLong string))
 )
-
 
         ;;;; strings ;;;;
 
@@ -73,9 +62,6 @@
   [s]
   (jt/local-date-time "yyyy-MM-dd'T'HH:mm:ss" s))
 
-;; 2021-05-31T23:54:48
-
-;; (jt/after?)
 
         ;;;; I/O ;;;;
 
@@ -89,9 +75,6 @@
 (defn list-subdirectories
   "Returns a list of just the subdirectories of the directory string `dir`"
   [dir]
-  ;; (->> (file-seq (jio/file dir))
-  ;;      (filter #(.isDirectory %))
-  ;;      (remove #(= % (jio/file dir)))))
   (->> (.listFiles (jio/file dir))
        (filter #(.isDirectory %))))
 
@@ -99,7 +82,6 @@
   "Checks if `file` has a suffix `suffix`. Works on file object types."
   [ ^String suffix ^java.io.File file]
   (when (.isFile file)
-       ;; (re-find (re-pattern (str ".*\\." suffix "$")) (.getName file))))
        (clojure.string/ends-with? (.getName file) (str "." suffix))))
 
 
@@ -107,6 +89,5 @@
   "Returns a list of all files in the directory `dir` with the extension `ext`.
    This is not recursive, i.e not from subdirectories"
   [dir ext]
-  ;; (->> (file-seq (jio/file dir))
   (->> (.listFiles (jio/file dir))
        (filter (partial file-suffix? ext))))

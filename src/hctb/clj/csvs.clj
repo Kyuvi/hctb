@@ -15,16 +15,12 @@
 
 (defn validate-timestamp
   [x]
-  ;; (let [stamp (try (utils/parse-datetime x)
-               ;; (catch Exception e false))]
-    ;; stamp))
   (utils/ignore-exception (utils/parse-datetime x)))
 
 
 (defn valid-time-sequence?
   [start-time stop-time]
-  (jt/after? stop-time start-time)
-  )
+  (jt/after? stop-time start-time))
 
 (defn validate-pos-int
   [x]
@@ -58,12 +54,10 @@
         r-name (not-empty f)
         distance (greater-than-ten g)
         duration (greater-than-ten h)
-        journey-vector [d-time r-time d-id d-name r-id r-name distance duration]
-        ]
+        journey-vector [d-time r-time d-id d-name r-id r-name distance duration]]
     (when (and (not-any? nil? journey-vector)
                (valid-time-sequence? d-time r-time))
-      journey-vector))
-  )
+      journey-vector)))
 
 (defn process-station-row
   "Ensure that elements in `row-xs` from a 'station' csv are of the right type,
@@ -77,8 +71,5 @@
         cap (validate-pos-int k)
         long (validate-logtitude l)
         lat (validate-latitude m)
-        station-vector (vec (concat [fid s-id] str-vec [cap long lat] ) )
-        ;; station-vector [fid s-id c d e f g h i j cap long lat]
-        ]
-    (when (not-any? nil? station-vector) station-vector))
-  )
+        station-vector (vec (concat [fid s-id] str-vec [cap long lat] ))]
+    (when (not-any? nil? station-vector) station-vector)))

@@ -4,21 +4,19 @@
             [clojure.java.io :as jio]
             [clojure.java.jdbc :as sql]
             [hctb.clj.utils :as utils]
-            [hctb.clj.csvs :as hc]
-            ))
+            [hctb.clj.csvs :as hc]))
 
 
 (defn db-connection?
   "Test if there is a connection to the database"
   [db]
-  (= {:result 10} (first (sql/query db ["select 2*5 as result"]))) )
+  (= {:result 10} (first (sql/query db ["select 2*5 as result"]))))
 
 (def journey-types ["timestamp" "timestamp" "integer" "text"  "integer" "text"
                     "integer" "integer"])
 
 (def station-types ["integer" "integer"  "text"  "text"  "text"  "text"  "text"
                     "text" "text" "text" "integer"
-                    ;; "double precision" "double precision"])
                     "real" "real"])
 
 (defn build-sql-table-commands
@@ -32,13 +30,10 @@
          col-defs (->> (map (fn [col t-type] (format"\t%s %s" col t-type ))
                             header-seq table-types)
                        (interpose ",\n")
-                       (apply str)  )
-         ]
-     (vector
-      (format "DROP TABLE IF EXISTS %s;" table-name)
-      (format "CREATE TABLE %s (\n%s %s\n);"
-              table-name col-defs ending-string))
-     )))
+                       (apply str))]
+     (vector (format "DROP TABLE IF EXISTS %s;" table-name)
+             (format "CREATE TABLE %s (\n%s %s\n);"
+              table-name col-defs ending-string)))))
 
 (defn make-sql-table
   "Create a new table `table-name` in database `db`
@@ -55,13 +50,12 @@
           process-fn (if (= column-count 8)
                        hc/process-journey-row
                        hc/process-station-row)]
-      (doseq [chunk-of-rows (partition-all chunk-size data-rows) ]
+      (doseq [chunk-of-rows (partition-all chunk-size data-rows)]
         (print ".")
         (flush)
         (->> (map process-fn chunk-of-rows)
              (remove nil? )
-             (sql/insert-multi! db table header-seq)))
-      ))
+             (sql/insert-multi! db table header-seq)))))
 
 (defn create-table-insert-file-data
   "Create table `table-name` in database `db` with data from file `csvfile`.
@@ -71,8 +65,7 @@
     (let [csv-rows (csv/read-csv reader)
           header (hc/process-header-strings (first csv-rows))
           data-rows (rest csv-rows)
-          column-count (count header)
-          ]
+          column-count (count header)]
       (if-not (contains? #{8 13} column-count)
         (throw (Exception.
                 (format "File %s has an unexpected header %s with %s columns."
@@ -81,8 +74,7 @@
           (make-sql-table db table-name header column-count)
           (insert-csv-data db table-name header data-rows column-count)
           column-count ;; Return column-count for use by insert-csvs-from-subdirs
-        )
-      ))))
+        )))))
 
 (defn insert-loose-csvs
   "Insert data from files in `file-list` into database `db`,
@@ -92,8 +84,7 @@
     (let [table-name (->> (clojure.string/replace (.getName csvfile) ".csv" "")
                           (utils/replace-string-conflicts-with-underscores))]
       (println (str "processing table: " table-name))
-      (create-table-insert-file-data db table-name csvfile)
-)))
+      (create-table-insert-file-data db table-name csvfile))))
 
 (defn insert-csvs-from-subdirs
   "Insert data from files in containded in sub-directories `subdir-list`
@@ -108,8 +99,7 @@
                       subdir-name )
           file-list (utils/list-files-of-type subdir "csv")
           first-file (first file-list)
-          other-files (next file-list)
-          ]
+          other-files (next file-list)]
     (if  first-file
       (do (println (str "processing table: " table-name))
           ;; process first file to get subdir table column-count
@@ -152,5 +142,4 @@
     (when-not (or subdirs loose-csv-files)
       (throw (Exception. "No valid files in provided directory, Aborting!")))
     (when subdirs (insert-csvs-from-subdirs db subdirs))
-    (when loose-csv-files (insert-loose-csvs db loose-csv-files))
-  ))
+    (when loose-csv-files (insert-loose-csvs db loose-csv-files))))
