@@ -6,7 +6,6 @@ RUN mkdir -p /app
 WORKDIR /app
 
 # Copy only the target jar over
-# COPY hctb-0.1.0-SNAPSHOT-standalone.jar .
 COPY hctb-0.1.0-SNAPSHOT-standalone.jar .
 
 # Set environment variables
@@ -20,9 +19,4 @@ ENV POSTGRES_PASS=kotoba
 EXPOSE 3000
 
 # Run the JAR
-# CMD java -jar hctb-0.1.0-SNAPSHOT-standalone.jar
 ENTRYPOINT  [ "java", "-jar", "hctb-0.1.0-SNAPSHOT-standalone.jar" ]
-# ENTRYPOINT  java -jar hctb-0.1.0-SNAPSHOT-standalone.jar
-# ENTRYPOINT  ["java", "-jar"]
-# CMD  ["{:host \"mydb\"}"]
-# CMD ["hctb-0.1.0-SNAPSHOT-standalone.jar"]
